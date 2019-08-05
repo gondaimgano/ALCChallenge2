@@ -25,9 +25,20 @@ class DealActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
-            R.id.mnu_savedeal->FirebaseUtil.getReference().push().apply {
-                setValue(null)
-            }
+            R.id.mnu_savedeal->
+                FirebaseUtil.getReference().push().apply {
+                    val k = this.key
+                    setValue(TravelItem().apply {
+                        key = k
+                        place = txtplace.text.toString()
+                        description = txtdescription.text.toString()
+                        amount = txtamount.text.toString()
+                        imageURL = previewImage.toString()
+                    })
+                }.apply {
+                    onBackPressed()
+                }
+
         }
 
         return super.onOptionsItemSelected(item)
