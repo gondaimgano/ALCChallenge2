@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/menu_save" android:id="@+id/mnu_save" app:showAsAction="ifRoom|withText"/>
+    <item android:title="@string/menu_logout" android:id="@+id/mnu_logout" app:showAsAction="never"/>
+</menu>

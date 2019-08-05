@@ -11,24 +11,29 @@ object FirebaseUtil {
     val mFirebaseAuth:FirebaseAuth= FirebaseAuth.getInstance()
    lateinit var mAuthListener:FirebaseAuth.AuthStateListener
      val mFirebaseDatabase:FirebaseDatabase= FirebaseDatabase.getInstance()
-    lateinit var mDatabaseReference: DatabaseReference
+    private lateinit var mDatabaseReference: DatabaseReference
 
 
     fun openFbReference(s:String,action:(FirebaseAuth)->Unit){
 
 
         mDatabaseReference= mFirebaseDatabase.reference.child(s)
+
         mAuthListener= FirebaseAuth.AuthStateListener {
             action(it)
         }
+        attachListener()
+
     }
+
+    fun getReference()= mDatabaseReference
 
     fun attachListener(){
           mFirebaseAuth.apply {
               addAuthStateListener(mAuthListener)
           }
     }
-    fun removeListener(){
+    fun detachListener(){
         mFirebaseAuth.apply {
             removeAuthStateListener(mAuthListener)
         }
