@@ -28,6 +28,8 @@ object FirebaseUtil {
 
     fun getReference()= mDatabaseReference
 
+    fun signOut()= mFirebaseAuth.signOut()
+
     fun attachListener(){
           mFirebaseAuth.apply {
               addAuthStateListener(mAuthListener)

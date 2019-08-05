@@ -27,7 +27,7 @@ class ListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
             R.id.mnu_logout ->
-                FirebaseUtil.mFirebaseAuth.signOut()
+                FirebaseUtil.signOut()
             R.id.mnu_save ->
                 startActivity(Intent(this,DealActivity::class.java))
             else ->
