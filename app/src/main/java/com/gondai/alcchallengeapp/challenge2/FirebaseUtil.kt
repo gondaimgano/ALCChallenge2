@@ -30,7 +30,7 @@ object FirebaseUtil {
 
 
     private  fun checkAdmin(user: FirebaseUser?):Boolean{
-        var exists=false;
+        var exists=false
         user.let {
             mFirebaseDatabase.reference.child("admins")
                 .orderByChild("uid").equalTo(it?.uid)
@@ -48,7 +48,11 @@ object FirebaseUtil {
     }
     fun getReference()= mDatabaseReference
 
-    fun signOut()= mFirebaseAuth.signOut()
+    fun signOut()= mFirebaseAuth.apply {
+        this.signOut()
+       // detachListener()
+
+    }
 
     fun attachListener(){
           mFirebaseAuth.apply {
