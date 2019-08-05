@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ALCChallenge2</string>
+    <string name="app_name">Travelamatics</string>
     <string name="menu_save">New Travel Deal</string>
     <string name="menu_logout">Logout</string>
     <string name="save_deal">save</string>
@@ -7,4 +7,5 @@
     <string name="description">Description</string>
     <string name="amount">Amount</string>
     <string name="menu_cancel">Cancel</string>
+    <string name="mnu_delete">Delete</string>
 </resources>
