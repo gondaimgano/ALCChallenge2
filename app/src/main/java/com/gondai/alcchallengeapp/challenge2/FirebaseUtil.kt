@@ -2,6 +2,7 @@ package com.gondai.alcchallengeapp.challenge2
 
 import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -11,7 +12,7 @@ object FirebaseUtil {
   private  val mFirebaseAuth:FirebaseAuth= FirebaseAuth.getInstance()
   private lateinit var mAuthListener:FirebaseAuth.AuthStateListener
      val mFirebaseDatabase:FirebaseDatabase= FirebaseDatabase.getInstance()
-    private lateinit var mDatabaseReference: DatabaseReference
+    private var mDatabaseReference: DatabaseReference=FirebaseDatabase.getInstance().reference.child("travels")
 
 
     fun openFbReference(s:String,action:(FirebaseAuth)->Unit){
@@ -36,7 +37,8 @@ object FirebaseUtil {
                 .orderByChild("uid").equalTo(it?.uid)
                 .addValueEventListener(object :ValueEventListener{
                 override fun onDataChange(p0: DataSnapshot) {
-                   exists=p0.exists()
+
+                   exists=p0.hasChild(it!!.uid)
                 }
 
                 override fun onCancelled(p0: DatabaseError) {
