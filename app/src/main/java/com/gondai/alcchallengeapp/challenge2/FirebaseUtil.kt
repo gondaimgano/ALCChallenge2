@@ -8,8 +8,8 @@ import com.google.firebase.database.FirebaseDatabase
 
 object FirebaseUtil {
 
-    val mFirebaseAuth:FirebaseAuth= FirebaseAuth.getInstance()
-   lateinit var mAuthListener:FirebaseAuth.AuthStateListener
+  private  val mFirebaseAuth:FirebaseAuth= FirebaseAuth.getInstance()
+  private lateinit var mAuthListener:FirebaseAuth.AuthStateListener
      val mFirebaseDatabase:FirebaseDatabase= FirebaseDatabase.getInstance()
     private lateinit var mDatabaseReference: DatabaseReference
 
