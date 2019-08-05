@@ -19,8 +19,11 @@ class ListActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        invalidateOptionsMenu()
+        if(FirebaseUtil.isAdmin())
+        {
+            invalidateOptionsMenu()
         menuInflater.inflate(R.menu.save,menu)
+        }
 
         return true
     }
