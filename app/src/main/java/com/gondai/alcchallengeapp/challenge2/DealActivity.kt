@@ -29,35 +29,31 @@ lateinit var image: Image
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
             R.id.mnu_savedeal->
-                progressBarGo.apply {
-                    visibility= View.VISIBLE
-                }.apply {
-                    FirebaseUtil.getReference().push().apply {
-                        val k = this.key
-                        val ref=this
-                        FirebaseStorage.getInstance().reference.child(k!!).putFile(
-                            Uri.fromFile(File(image.path))
-                        ).addOnSuccessListener {
-                            it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
-                                // it.toString()
-                                ref.setValue(TravelItem().apply {
-                                    key = k
-                                    place = txtplace.text.toString()
-                                    description = txtdescription.text.toString()
-                                    amount = txtamount.text.toString()
-                                    imageURL = it.toString()
-                                }).apply {
-                                    onBackPressed()
-                                }
+                FirebaseUtil.getReference().push().apply {
+                    val key_ = this.key
+                    val ref=this
+                    progressBarGo.visibility=View.VISIBLE
+                    FirebaseStorage.getInstance().reference.child(key_!!).putFile(
+                        Uri.fromFile(File(image.path))
+                    ).addOnSuccessListener {
+                        it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
+                            // it.toString()
+                            ref.setValue(TravelItem().apply {
+                                key = key_
+                                place = txtplace.text.toString()
+                                description = txtdescription.text.toString()
+                                amount = txtamount.text.toString()
+                                imageURL = it.toString()
+                            }).apply {
+                                progressBarGo.visibility=View.GONE
+                                onBackPressed()
                             }
                         }
-                            .addOnFailureListener{
-                                Toast.makeText(this@DealActivity,it.message,Toast.LENGTH_SHORT).show()
-                            }
-
                     }
-                }.apply {
-                    visibility=View.INVISIBLE
+                        .addOnFailureListener{
+                            Toast.makeText(this@DealActivity,it.message,Toast.LENGTH_SHORT).show()
+                        }
+
                 }
 
             R.id.mnu_cancel ->
