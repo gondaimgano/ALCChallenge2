@@ -1,55 +1,26 @@
 package com.gondai.alcchallengeapp.challenge2
 
+
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-
-
-import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
-
-class TravelHolder(v: View):RecyclerView.ViewHolder(v){
-    private var text1:TextView
-    private var text2:TextView
-    private var text3:TextView
-    private var image:ImageView
-    init {
-        text1=v.findViewById(R.id.text1)
-        text2=v.findViewById(R.id.text2)
-        text3=v.findViewById(R.id.text3)
-        image=v.findViewById(R.id.image1)
-    }
-    fun bind(t:TravelItem){
-       // Toast.makeText(itemView.context,"${t.imageURL}",Toast.LENGTH_SHORT).show()
-        with(t){
-            text1.text=place
-            text2.text=description
-            text3.text=amount
-            Glide.with(itemView).load(imageURL).placeholder(R.color.colorPrimary).into(image)
-        }
-    }
-
-}
 
 class ListActivity : AppCompatActivity() {
    val RC_SIGN_IN=1001
     lateinit var adapterTravels: FirebaseRecyclerAdapter<TravelItem, TravelHolder>
-    // var isAdmin:Boolean=false
-    //private lateinit var mMenu: Menu
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +40,11 @@ class ListActivity : AppCompatActivity() {
             }
 
             protected override fun onBindViewHolder(holder: TravelHolder, position: Int, model: TravelItem) {
-               holder.bind(model)
+               holder.bind(model){
+                   startActivity(Intent(this@ListActivity,DealActivity::class.java).apply {
+                       putExtra("EDIT",true)
+                   })
+               }
             }
         }
 
@@ -87,19 +62,10 @@ class ListActivity : AppCompatActivity() {
 
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-       // Log.d("Menu Man :)","Called bro prepare !!!")
 
-        if(FirebaseUtil.isAdministrator)
-        {
-             menu?.clear()
-            menuInflater.inflate(R.menu.basic_admin,menu)
+        menu?.clear()
+     if(FirebaseUtil.isAdministrator) menuInflater.inflate(R.menu.basic_admin,menu) else menuInflater.inflate(R.menu.basic_user,menu)
 
-        }
-        else
-        {
-            menu?.clear()
-            menuInflater.inflate(R.menu.basic_user,menu)
-        }
 
 
         return  super.onPrepareOptionsMenu(menu)
@@ -125,7 +91,7 @@ class ListActivity : AppCompatActivity() {
                     AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(arrayListOf(
-                            AuthUI.IdpConfig.EmailBuilder().build(),
+                           AuthUI.IdpConfig.EmailBuilder().build(),
                             AuthUI.IdpConfig.GoogleBuilder().build()
                         ))
                         .build(),

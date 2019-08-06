@@ -24,7 +24,10 @@ lateinit var image: Image
         butImagePicker.setOnClickListener {
             ImagePicker.create(this).start()
         }
+
     }
+
+
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
