@@ -1,10 +1,6 @@
 package com.gondai.alcchallengeapp.challenge2
 
-import android.app.Activity
-import android.content.Context
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 
 object FirebaseUtil {
@@ -13,6 +9,7 @@ object FirebaseUtil {
   private lateinit var mAuthListener:FirebaseAuth.AuthStateListener
      val mFirebaseDatabase:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var mDatabaseReference: DatabaseReference=FirebaseDatabase.getInstance().reference.child("travels")
+     var isAdministrator:Boolean=false
 
 
     fun openFbReference(s:String,action:(FirebaseAuth)->Unit){
@@ -21,32 +18,37 @@ object FirebaseUtil {
         mDatabaseReference= mFirebaseDatabase.reference.child(s)
 
         mAuthListener= FirebaseAuth.AuthStateListener {
-            action(it)
+         action(it)
+
         }
         attachListener()
 
     }
-    fun isAdmin():Boolean
-        =checkAdmin(mFirebaseAuth.currentUser)
+    fun isAdmin(action: (Boolean) -> Unit):Boolean
+        = checkAdmin(FirebaseAuth.getInstance().currentUser?.uid!!,action)
 
 
-    private  fun checkAdmin(user: FirebaseUser?):Boolean{
-        var exists=false
-        user.let {
+   private fun checkAdmin(s:String,action:(Boolean)->Unit):Boolean{
+
+
             mFirebaseDatabase.reference.child("admins")
-                .orderByChild("uid").equalTo(it?.uid)
-                .addValueEventListener(object :ValueEventListener{
-                override fun onDataChange(p0: DataSnapshot) {
+                .child(s)
+                .addListenerForSingleValueEvent(
 
-                   exists=p0.hasChild(it!!.uid)
-                }
+                    object :ValueEventListener{
+                        override fun onCancelled(p0: DatabaseError) {
 
-                override fun onCancelled(p0: DatabaseError) {
-//
-                }
-            })
-        }
-        return exists
+                        }
+
+                        override fun onDataChange(p0: DataSnapshot) {
+                            isAdministrator=p0.exists()
+                            action(isAdministrator)
+                        }
+
+                    }
+                )
+
+        return false
     }
     fun getReference()= mDatabaseReference
 
@@ -58,6 +60,7 @@ object FirebaseUtil {
 
     fun attachListener(){
           mFirebaseAuth.apply {
+              currentUser
               addAuthStateListener(mAuthListener)
           }
     }

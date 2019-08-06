@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -13,9 +14,11 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -45,6 +48,9 @@ class TravelHolder(v: View):RecyclerView.ViewHolder(v){
 class ListActivity : AppCompatActivity() {
    val RC_SIGN_IN=1001
     lateinit var adapterTravels: FirebaseRecyclerAdapter<TravelItem, TravelHolder>
+    // var isAdmin:Boolean=false
+    //private lateinit var mMenu: Menu
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -72,25 +78,32 @@ class ListActivity : AppCompatActivity() {
             adapter=adapterTravels
         }
 
+
+
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        if(FirebaseUtil.isAdmin())
+
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+       // Log.d("Menu Man :)","Called bro prepare !!!")
+
+        if(FirebaseUtil.isAdministrator)
         {
-            invalidateOptionsMenu()
-        menuInflater.inflate(R.menu.basic_admin,menu)
+             menu?.clear()
+            menuInflater.inflate(R.menu.basic_admin,menu)
+
         }
         else
         {
-            invalidateOptionsMenu()
-            menuInflater.inflate(R.menu.basic_admin,menu)
+            menu?.clear()
+            menuInflater.inflate(R.menu.basic_user,menu)
         }
 
-        return true
-    }
 
+        return  super.onPrepareOptionsMenu(menu)
+    }
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
             R.id.mnu_logout ->
@@ -103,23 +116,33 @@ class ListActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+
     override fun onResume() {
         super.onResume()
-
-        adapterTravels.startListening()
-
         FirebaseUtil.openFbReference("travels"){
             if(it.currentUser==null)
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(arrayListOf(
-                       AuthUI.IdpConfig.EmailBuilder().build(),
-                        AuthUI.IdpConfig.GoogleBuilder().build()
-                    ))
-                    .build(),
-                RC_SIGN_IN)
+                startActivityForResult(
+                    AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(arrayListOf(
+                            AuthUI.IdpConfig.EmailBuilder().build(),
+                            AuthUI.IdpConfig.GoogleBuilder().build()
+                        ))
+                        .build(),
+                    RC_SIGN_IN)
+                else
+                FirebaseUtil.isAdmin {
+                    invalidateOptionsMenu()
+                }
+
+
+
+
+
         }
+        adapterTravels.startListening()
+
+
 
     }
 
@@ -135,7 +158,11 @@ class ListActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK)
-            Toast.makeText(this,"Welcome Back",Toast.LENGTH_SHORT).show()
+
+         FirebaseUtil.isAdmin {
+             invalidateOptionsMenu()
+         }
+
 
     }
 }
