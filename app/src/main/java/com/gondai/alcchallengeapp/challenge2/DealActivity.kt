@@ -24,7 +24,22 @@ lateinit var image: Image
         butImagePicker.setOnClickListener {
             ImagePicker.create(this).start()
         }
+        with(App.currentTravelItem){
+            key?.let {
+                if(it.isNotBlank())
+                {
+                    txtplace.setText(this.place)
+                    txtdescription.setText(this.description)
+                    txtamount.setText(this.amount)
+                }
 
+            }
+            imageURL?.let {
+                if(it.isNotBlank())
+                    Glide.with(this@DealActivity).load(it).into(previewImage)
+            }
+
+        }
 
 
     }
@@ -63,6 +78,15 @@ lateinit var image: Image
 
             R.id.mnu_cancel ->
                 onBackPressed()
+            R.id.mnu_delete ->
+               with(App.currentTravelItem){
+                   key?.let {
+                       if(it.isNotBlank())
+                           FirebaseUtil.getTravelRef().child(it).removeValue()
+                   }.apply {
+                       onBackPressed()
+                   }
+               }
 
         }
 

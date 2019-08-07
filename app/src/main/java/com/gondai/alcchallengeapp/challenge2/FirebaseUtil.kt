@@ -7,7 +7,7 @@ object FirebaseUtil {
 
   private  val mFirebaseAuth:FirebaseAuth= FirebaseAuth.getInstance()
   private lateinit var mAuthListener:FirebaseAuth.AuthStateListener
-     val mFirebaseDatabase:FirebaseDatabase= FirebaseDatabase.getInstance()
+  private    val mFirebaseDatabase:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var mDatabaseReference: DatabaseReference=FirebaseDatabase.getInstance().reference.child("travels")
      var isAdministrator:Boolean=false
 
@@ -27,7 +27,7 @@ object FirebaseUtil {
     fun isAdmin(action: (Boolean) -> Unit):Boolean
         = checkAdmin(FirebaseAuth.getInstance().currentUser?.uid!!,action)
 
-
+fun getTravelRef()= mFirebaseDatabase.reference.child("travels")
    private fun checkAdmin(s:String,action:(Boolean)->Unit):Boolean{
 
 

@@ -42,7 +42,7 @@ class ListActivity : AppCompatActivity() {
             protected override fun onBindViewHolder(holder: TravelHolder, position: Int, model: TravelItem) {
                holder.bind(model){
                    startActivity(Intent(this@ListActivity,DealActivity::class.java).apply {
-                       putExtra("EDIT",true)
+                      App.currentTravelItem=model
                    })
                }
             }
@@ -75,7 +75,13 @@ class ListActivity : AppCompatActivity() {
             R.id.mnu_logout ->
                 FirebaseUtil.signOut()
             R.id.mnu_save ->
-                startActivity(Intent(this,DealActivity::class.java))
+                App.apply {
+                    currentTravelItem=TravelItem()
+                }.apply {
+                    startActivity(Intent(this@ListActivity,DealActivity::class.java))
+                }
+
+
             else ->
                 Toast.makeText(this,"No choice",Toast.LENGTH_SHORT).show()
         }
