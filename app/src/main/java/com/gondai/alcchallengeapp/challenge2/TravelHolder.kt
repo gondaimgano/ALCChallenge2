@@ -20,6 +20,7 @@ class TravelHolder(v: View): RecyclerView.ViewHolder(v){
     fun bind(t:TravelItem,action:(TravelItem)->Unit){
         // Toast.makeText(itemView.context,"${t.imageURL}",Toast.LENGTH_SHORT).show()
         itemView.setOnClickListener {
+        if(FirebaseUtil.isAdministrator)
             action(t)
         }
         with(t){
